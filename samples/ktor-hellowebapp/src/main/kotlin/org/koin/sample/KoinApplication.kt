@@ -11,9 +11,9 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.koin.dsl.module.applicationContext
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
 import org.koin.ktor.ext.inject
-import org.koin.standalone.StandAloneContext.startKoin
 
 class HelloRepository {
     fun getHello(): String = "Ktor & Koin"
@@ -43,14 +43,16 @@ fun Application.main() {
     }
 }
 
-val helloAppModule = applicationContext {
-    bean { HelloServiceImpl(get()) as HelloService }
-    bean { HelloRepository() }
+val helloAppModule = module {
+    single { HelloServiceImpl(get()) as HelloService }
+    single { HelloRepository() }
 }
 
 fun main(args: Array<String>) {
     // Start Koin
-    startKoin(listOf(helloAppModule))
+    startKoin {
+        listOf(helloAppModule)
+    }
     // Start Ktor
     embeddedServer(Netty, commandLineEnvironment(args)).start()
 }
