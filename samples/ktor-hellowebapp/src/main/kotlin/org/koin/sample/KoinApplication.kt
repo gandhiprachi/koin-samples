@@ -13,7 +13,9 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
+import org.koin.ktor.ext.modules
 
 class HelloRepository {
     fun getHello(): String = "Ktor & Koin"
@@ -34,7 +36,9 @@ fun Application.main() {
 
     // Lazy inject HelloService
     val service: HelloService by inject()
-
+    install(Koin) {
+        modules(listOf(helloAppModule))
+    }
     // Routing section
     routing {
         get("/hello") {
@@ -49,10 +53,6 @@ val helloAppModule = module {
 }
 
 fun main(args: Array<String>) {
-    // Start Koin
-    startKoin {
-        listOf(helloAppModule)
-    }
     // Start Ktor
     embeddedServer(Netty, commandLineEnvironment(args)).start()
 }
