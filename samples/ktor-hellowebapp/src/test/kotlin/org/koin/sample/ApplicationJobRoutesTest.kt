@@ -13,11 +13,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 class ApplicationJobRoutesTest : AutoCloseKoinTest() {
-
-    @Before
-    fun before() {
-        startKoin { listOf(helloAppModule) }
-    }
+    
 
     @Test
     fun testHelloRequest() = withTestApplication(Application::main) {
